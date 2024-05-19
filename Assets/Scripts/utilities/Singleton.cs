@@ -8,7 +8,10 @@ namespace utilities
 
         public virtual void Awake()
         {
-            Instance = GetComponent<T>();
+            if (Instance == null)
+            {
+                Instance = GetComponent<T>();
+            }
         }
 
         public virtual void OnDestroy()

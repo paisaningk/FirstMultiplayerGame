@@ -7,6 +7,7 @@ namespace Lobby
 {
     public class LobbyUIManager : MonoBehaviour
     {
+        public LoadingCanvasController loadingCanvasControllerPrefab;
         public LobbyPanelBase[] lobbyPanelBaseList;
         public LobbyPanelType currentPanelType;
 
@@ -16,6 +17,8 @@ namespace Lobby
             {
                 lobbyPanelBase.InitPanel(this);
             }
+
+            Instantiate(loadingCanvasControllerPrefab);
         }
 
         [Button]

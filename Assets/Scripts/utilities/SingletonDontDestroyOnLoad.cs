@@ -44,12 +44,11 @@ namespace utilities
             }
         }
 
-        private void Awake()
+        public virtual void Awake()
         {
             if (m_Instance != null && m_Instance != this)
             {
-                DestroyImmediate(gameObject);
-                return;
+                Destroy(this.gameObject);
             }
 
             m_Instance = GetComponent<T>();
