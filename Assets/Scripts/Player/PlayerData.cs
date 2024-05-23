@@ -4,6 +4,7 @@ namespace Player
 {
     public struct PlayerData : INetworkInput
     {
-        public float horzontal;
+        public float horizontalInput;
+        public NetworkButtons networkButtons;
     }
 }
