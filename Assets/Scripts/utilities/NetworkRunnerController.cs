@@ -37,7 +37,8 @@ namespace utilities
             // EX.on player joined have debug in networkRunnerInstance have debug too
             networkRunnerInstance.AddCallbacks(this);
 
-            //networkRunnerInstance.ProvideInput = true;
+            //ProvideInput Means that player is recording and sending input to the server
+            networkRunnerInstance.ProvideInput = true;
 
             var startGameArgs = new StartGameArgs
             {
