@@ -14,6 +14,8 @@ namespace utilities
 
         public NetworkRunner networkRunnerInstance;
 
+        [field: SerializeField] public string LocalPlayerName { get; private set; }
+
         public event Action OnStartedRunnerConnection;
         public event Action OnPlayerJoinedSuccessfully;
 
@@ -22,16 +24,15 @@ namespace utilities
             DontDestroyOnLoad(this);
         }
 
-
         public async void StartGame(GameMode gameMode, string roomName)
         {
             OnStartedRunnerConnection?.Invoke();
-            
+
             if (!networkRunnerInstance)
             {
                 networkRunnerInstance = Instantiate(networkRunnerPrefab);
             }
-            
+
             // Register so we will get the callback as well
             // everything we write in INetworkRunnerCallbacks will register to networkRunnerInstance
             // EX.on player joined have debug in networkRunnerInstance have debug too
@@ -59,18 +60,22 @@ namespace utilities
             {
                 Debug.LogError($"Failed To Start {result.ShutdownReason}");
             }
-            
         }
 
         public void ShutDownRunner()
         {
             networkRunnerInstance.Shutdown();
         }
-        
+
+        public void SetLocalPlayerNickName(string playerName)
+        {
+            LocalPlayerName = playerName;
+        }
+
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
-        { 
-           Debug.Log("OnPlayerJoined");
-           OnPlayerJoinedSuccessfully?.Invoke();
+        {
+            Debug.Log("OnPlayerJoined");
+            OnPlayerJoinedSuccessfully?.Invoke();
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -91,7 +96,7 @@ namespace utilities
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
             Debug.Log("OnShutdown");
-            
+
             SceneManager.LoadScene("Lobby");
         }
 
@@ -105,7 +110,8 @@ namespace utilities
             Debug.Log("OnDisconnectedFromServer");
         }
 
-        public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+        public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request,
+            byte[] token)
         {
             Debug.Log("OnConnectRequest");
         }

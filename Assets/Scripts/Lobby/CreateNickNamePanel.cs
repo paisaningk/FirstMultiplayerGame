@@ -21,7 +21,7 @@ namespace Lobby
         public override void InitPanel(LobbyUIManager manager)
         {
             base.InitPanel(manager);
-            
+
             crateNickNameButton.interactable = false;
             crateNickNameButton.onClick.AddListener(CreateNickName);
             inputField.onValueChanged.AddListener(OnInputValueChange);
@@ -35,10 +35,12 @@ namespace Lobby
         private void CreateNickName()
         {
             var nickName = inputField.text;
-            
+
             if (nickName.Length >= maxCharForName)
             {
                 lobbyUIManager.ShowPenal(LobbyPanelType.MiddleSectionPanel);
+
+                GlobalManager.Instance.NetworkRunnerController.SetLocalPlayerNickName(nickName);
             }
         }
     }
