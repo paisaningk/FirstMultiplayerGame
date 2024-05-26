@@ -36,11 +36,13 @@ namespace Player
         public float horizontal;
         public new Rigidbody2D rigidbody;
         public PlayerWeaponController playerWeaponController;
+        public PlayerVisualController playerVisualController;
 
         public void OnValidate()
         {
             rigidbody = GetComponent<Rigidbody2D>();
             playerWeaponController = GetComponent<PlayerWeaponController>();
+            playerVisualController = GetComponent<PlayerVisualController>();
         }
 
         public override void Spawned()
@@ -106,6 +108,11 @@ namespace Player
                 rigidbody.velocity = new Vector2(input.horizontalInput * moveSpeed, rigidbody.velocity.y);
                 CheckJumpInput(input);
             }
+        }
+
+        public override void Render()
+        {
+            playerVisualController.RenderVisual(rigidbody.velocity);
         }
 
         public void CheckJumpInput(PlayerData input)
