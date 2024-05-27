@@ -243,6 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkRunnerPrefab: {fileID: 8169511266352341850, guid: 57979a94f578bad4caccc693c66b525e, type: 3}
   networkRunnerInstance: {fileID: 0}
+  <LocalPlayerName>k__BackingField: 
 --- !u!4 &2043315792
 Transform:
   m_ObjectHideFlags: 0

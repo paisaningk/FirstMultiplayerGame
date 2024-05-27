@@ -9,7 +9,8 @@ namespace Player
     public enum PlayerInputButton
     {
         None,
-        Jump
+        Jump,
+        Shoot
     }
 
     public class PlayerController : NetworkBehaviour, IBeforeUpdate
@@ -114,7 +115,7 @@ namespace Player
 
         public override void Render()
         {
-            playerVisualController.RenderVisual(rigidbody.velocity);
+            playerVisualController.RenderVisual(rigidbody.velocity, playerWeaponController.IsHoldingShootingKey);
         }
 
         public void CheckJumpInput(PlayerData input)
@@ -141,6 +142,7 @@ namespace Player
             };
 
             data.networkButtons.Set(PlayerInputButton.Jump, Input.GetKey(KeyCode.Space));
+            data.networkButtons.Set(PlayerInputButton.Shoot, Input.GetKey(KeyCode.Mouse0));
             data.gunPivotRotation = playerWeaponController.localQuaternionPivotRot;
 
             return data;

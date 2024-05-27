@@ -9,29 +9,33 @@ namespace Player
         [SerializeField] private Transform pivotGun;
         [SerializeField] private Transform healthCanvas;
 
-        private readonly int isWalking = Animator.StringToHash("IsWalking");
         private bool init;
         private Vector3 originalPlayerScale;
         private Vector3 originalPivotGun;
         private Vector3 originalHealthCanvas;
+        private readonly int isWalking = Animator.StringToHash("IsWalking");
+        private readonly int isShooting = Animator.StringToHash("IsShooting");
+        private const int shootingLayerIndex = 1;
 
         private void Start()
         {
             originalPlayerScale = transform.localScale;
             originalPivotGun = pivotGun.localScale;
             originalHealthCanvas = healthCanvas.localScale;
-            ;
+
+            animator.SetLayerWeight(shootingLayerIndex, 1);
 
             init = true;
         }
 
-        public void RenderVisual(Vector2 velocity)
+        public void RenderVisual(Vector2 velocity, bool isShoot)
         {
             if (!init) return;
 
             var isMoving = velocity.x is > 0.1f or < -0.1f;
 
             animator.SetBool(isWalking, isMoving);
+            animator.SetBool(isShooting, isShoot);
         }
 
         public void UpdateScalePlayer(Vector2 velocity)

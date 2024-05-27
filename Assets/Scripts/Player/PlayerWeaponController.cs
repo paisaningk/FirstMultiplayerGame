@@ -7,10 +7,20 @@ namespace Player
     public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
     {
         [field: SerializeField] public Quaternion localQuaternionPivotRot { get; private set; }
+        public float delayBetweenShots = 0.1f;
+        public ParticleSystem muzzleEffect;
         public Camera localCam;
         public Transform pivotToRotate;
-        
+
+        [Networked(OnChanged = nameof(OnMuzzleEffectStateChange))]
+        private NetworkBool PlayerMuzzleEffect { get; set; }
+
+        [Networked]
+        public NetworkBool IsHoldingShootingKey { get; private set; }
+
         [Networked] private Quaternion CurrentPlayerPivotRotation { get; set; }
+        [Networked] private NetworkButtons ButtonsPrev { get; set; }
+        [Networked] private TickTimer ShootCoolDown { get; set; }
 
         public void BeforeUpdate()
         {
@@ -28,10 +38,59 @@ namespace Player
             // tell Current Player Pivot Rotation to host
             if (Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
             {
+                CheckShootInput(input);
                 CurrentPlayerPivotRotation = input.gunPivotRotation;
+
+                ButtonsPrev = input.networkButtons;
             }
-            
+
             pivotToRotate.rotation = CurrentPlayerPivotRotation;
+        }
+
+        private void CheckShootInput(PlayerData input)
+        {
+            var currentButton = input.networkButtons.GetPressed(ButtonsPrev);
+
+            IsHoldingShootingKey = currentButton.WasReleased(ButtonsPrev, PlayerInputButton.Shoot);
+
+            if (currentButton.WasReleased(ButtonsPrev, PlayerInputButton.Shoot) &&
+                ShootCoolDown.ExpiredOrNotRunning(Runner))
+            {
+                PlayerMuzzleEffect = true;
+
+                ShootCoolDown = TickTimer.CreateFromSeconds(Runner, delayBetweenShots);
+            }
+            else
+            {
+                PlayerMuzzleEffect = false;
+            }
+        }
+
+        private static void OnMuzzleEffectStateChange(Changed<PlayerWeaponController> changed)
+        {
+            var currentState = changed.Behaviour.PlayerMuzzleEffect;
+
+            changed.LoadOld();
+
+            var oldState = changed.Behaviour.PlayerMuzzleEffect;
+
+            if (oldState != currentState)
+            {
+                changed.Behaviour.SetMuzzleEffect(currentState);
+            }
+        }
+
+        private void SetMuzzleEffect(bool play)
+        {
+            if (play)
+            {
+                muzzleEffect.Play();
+            }
+            else
+            {
+                Debug.Log("Stop");
+                muzzleEffect.Stop();
+            }
         }
     }
 }
