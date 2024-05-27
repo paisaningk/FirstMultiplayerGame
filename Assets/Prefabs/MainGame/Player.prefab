@@ -1440,6 +1440,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1399211459515810913}
+  pivotGun: {fileID: 6543700992697076833}
+  healthCanvas: {fileID: 7463141840138270079}
 --- !u!1 &9212181630235034334
 GameObject:
   m_ObjectHideFlags: 0

@@ -108,6 +108,8 @@ namespace Player
                 rigidbody.velocity = new Vector2(input.horizontalInput * moveSpeed, rigidbody.velocity.y);
                 CheckJumpInput(input);
             }
+
+            playerVisualController.UpdateScalePlayer(rigidbody.velocity);
         }
 
         public override void Render()
