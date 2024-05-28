@@ -1,4 +1,5 @@
 ﻿using Fusion;
+using ObjectInGame;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;

@@ -12,6 +12,10 @@ namespace Player
         public Camera localCam;
         public Transform pivotToRotate;
 
+        [Header("Bullet")]
+        public Transform fireSpawnPoint;
+        public NetworkPrefabRef bulletPrefabRef = NetworkPrefabRef.Empty;
+
         [Networked(OnChanged = nameof(OnMuzzleEffectStateChange))]
         private NetworkBool PlayerMuzzleEffect { get; set; }
 
@@ -59,6 +63,8 @@ namespace Player
                 PlayerMuzzleEffect = true;
 
                 ShootCoolDown = TickTimer.CreateFromSeconds(Runner, delayBetweenShots);
+
+                Runner.Spawn(bulletPrefabRef, fireSpawnPoint.position, fireSpawnPoint.rotation, Object.InputAuthority);
             }
             else
             {
