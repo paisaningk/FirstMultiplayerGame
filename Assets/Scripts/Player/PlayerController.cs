@@ -86,6 +86,16 @@ namespace Player
 
                 RpcSetNickName(playerName);
             }
+            else
+            {
+                //Snapshots = get verify form sever
+                //if this is not proxy aka inputAuthority player
+                //we want to make to set this NRB2D InterpolationDataSources to Snapshots
+                //as it will automatically set NRB2D to be predicted regardless if it's proxy or not 
+                //as we are doing fully physics prediction
+                //and setting it back to Snapshots for proxies will also make that lag compensation will work properly + be more cost efficient
+                GetComponent<NetworkRigidbody2D>().InterpolationDataSource = InterpolationDataSources.Snapshots;
+            }
         }
 
         //Happens before anything else in fusion does , network application , etc
@@ -102,6 +112,7 @@ namespace Player
 
         public override void FixedUpdateNetwork()
         {
+            Debug.Log(Runner.Tick);
             // will return false if 
             // the clinet does not have state authority or input authority
             // the requested type of input data does not exist in the simulation

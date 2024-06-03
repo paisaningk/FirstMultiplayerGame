@@ -89,7 +89,7 @@ MonoBehaviour:
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
-  UseLegacySharedModeInterpolation: 0
+  UseLegacySharedModeInterpolation: 1
   TargetInterpolationDelay: 0.03
 --- !u!61 &921339483764633665
 BoxCollider2D:
@@ -156,6 +156,9 @@ MonoBehaviour:
   groupLayer:
     serializedVersion: 2
     m_Bits: 64
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &4187937280898635321
 GameObject:
   m_ObjectHideFlags: 0
