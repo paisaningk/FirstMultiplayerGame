@@ -10,6 +10,8 @@ namespace Player
     {
         public Image fillAmount;
         public TMP_Text healthAmountText;
+        public PlayerCameraController playerCameraController;
+        public Animator bloodHitAnimation;
 
         [Networked(OnChanged = nameof(HealthAmountChange))]
         private int CurrentHpAmount { get; set; }
@@ -58,9 +60,15 @@ namespace Player
 
         private void PlayerGotHit(int healthAmount)
         {
-            if (GlobalManager.Instance.IsLocalPlayer(Object))
+            if (Runner.LocalPlayer == Object.HasInputAuthority)
             {
                 Debug.Log("Local player got hit");
+
+                var shank = new Vector3(0.2f,0.1f);
+                
+                playerCameraController.ShankCamera(shank);
+
+                bloodHitAnimation.Play("Hit");
             }
 
             if (healthAmount <= 0)

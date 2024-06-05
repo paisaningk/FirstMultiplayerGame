@@ -19,7 +19,7 @@ namespace ObjectInGame
         [Networked] private NetworkBool IsHitSomething { get; set; }
         [Networked] private TickTimer LifeTimeTimer { get; set; }
 
-        private List<LagCompensatedHit> hits = new();
+        private List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
 
         public override void Spawned()
         {
@@ -32,7 +32,6 @@ namespace ObjectInGame
             if (!IsHitSomething)
             {
                 CheckIfHitGround();
-
                 CheckIfWeHitPlayer();
             }
 
@@ -44,7 +43,6 @@ namespace ObjectInGame
             if (LifeTimeTimer.Expired(Runner) || IsHitSomething)
             {
                 LifeTimeTimer = TickTimer.None;
-
                 Runner.Despawn(Object);
             }
         }
@@ -54,7 +52,7 @@ namespace ObjectInGame
             var groundCollider = Runner.GetPhysicsScene2D()
                 .OverlapBox(transform.position, colli.bounds.size, 0, groupLayer);
 
-            if (groundCollider)
+            if (groundCollider != default)
             {
                 IsHitSomething = true;
             }
@@ -62,7 +60,7 @@ namespace ObjectInGame
 
         private void CheckIfWeHitPlayer()
         {
-            Runner.LagCompensation.OverlapBox(transform.position, colli.bounds.size, quaternion.identity,
+            Runner.LagCompensation.OverlapBox(transform.position, colli.bounds.size, Quaternion.identity,
                 Object.InputAuthority, hits, playerLayer);
 
             if (hits.Count <= 0) return;

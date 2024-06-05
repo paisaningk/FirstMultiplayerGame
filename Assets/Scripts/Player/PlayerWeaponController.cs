@@ -28,7 +28,7 @@ namespace Player
 
         public void BeforeUpdate()
         {
-            if (GlobalManager.Instance.IsLocalPlayer(Object))
+            if (Runner.LocalPlayer == Object.HasInputAuthority)
             {
                 var dir = localCam.ScreenToWorldPoint(Input.mousePosition) - transform.position;
                 var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

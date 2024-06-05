@@ -78,7 +78,7 @@ namespace Player
 
         private void SetLocalObject()
         {
-            if (GlobalManager.Instance.IsLocalPlayer(Object))
+            if (Runner.LocalPlayer == Object.HasInputAuthority)
             {
                 camGameObject.SetActive(true);
 
@@ -104,7 +104,7 @@ namespace Player
         public void BeforeUpdate()
         {
             //check is we are local player
-            if (GlobalManager.Instance.IsLocalPlayer(Object))
+            if (Runner.LocalPlayer == Object.HasInputAuthority)
             {
                 horizontal = Input.GetAxisRaw(horizontalInputName);
             }
@@ -112,7 +112,6 @@ namespace Player
 
         public override void FixedUpdateNetwork()
         {
-            Debug.Log(Runner.Tick);
             // will return false if 
             // the clinet does not have state authority or input authority
             // the requested type of input data does not exist in the simulation
