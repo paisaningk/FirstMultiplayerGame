@@ -26,9 +26,16 @@ namespace Player
         [Networked] private NetworkButtons ButtonsPrev { get; set; }
         [Networked] private TickTimer ShootCoolDown { get; set; }
 
+        private PlayerController playerController;
+
+        public override void Spawned()
+        {
+            playerController = GetComponent<PlayerController>();
+        }
+
         public void BeforeUpdate()
         {
-            if (Runner.LocalPlayer == Object.HasInputAuthority)
+            if (playerController.IsAlive && Runner.LocalPlayer == Object.HasInputAuthority)
             {
                 var dir = localCam.ScreenToWorldPoint(Input.mousePosition) - transform.position;
                 var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -40,7 +47,7 @@ namespace Player
         public override void FixedUpdateNetwork()
         {
             // tell Current Player Pivot Rotation to host
-            if (Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
+            if (playerController.IsAlive && Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
             {
                 CheckShootInput(input);
                 CurrentPlayerPivotRotation = input.gunPivotRotation;

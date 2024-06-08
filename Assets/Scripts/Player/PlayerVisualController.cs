@@ -15,6 +15,7 @@ namespace Player
         private Vector3 originalHealthCanvas;
         private readonly int isWalking = Animator.StringToHash("IsWalking");
         private readonly int isShooting = Animator.StringToHash("IsShooting");
+        private readonly int die = Animator.StringToHash("Die");
         private const int shootingLayerIndex = 1;
 
         private void Start()
@@ -54,6 +55,11 @@ namespace Player
                 pivotGun.localScale = GetFlip(originalPivotGun);
                 healthCanvas.localScale = GetFlip(originalHealthCanvas);
             }
+        }
+
+        public void TriggerDieAnimation()
+        {
+            animator.SetTrigger(die);
         }
 
         private Vector3 GetFlip(Vector3 vector3)

@@ -19,7 +19,7 @@ namespace ObjectInGame
         [Networked] private NetworkBool IsHitSomething { get; set; }
         [Networked] private TickTimer LifeTimeTimer { get; set; }
 
-        private List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
+        private List<LagCompensatedHit> hits = new();
 
         public override void Spawned()
         {
@@ -68,16 +68,16 @@ namespace ObjectInGame
             foreach (var hit in hits)
             {
                 if (hit.Hitbox == null) continue;
-                var player = hit.Hitbox.GetComponentInParent<NetworkObject>();
+                var player = hit.Hitbox.GetComponentInParent<PlayerController>();
 
-                var notHitOwnPlayer = player.InputAuthority.PlayerId != Object.InputAuthority.PlayerId;
-                
-                if (notHitOwnPlayer)
+                var notHitOwnPlayer = player.Object.InputAuthority.PlayerId != Object.InputAuthority.PlayerId;
+
+                if (notHitOwnPlayer && player.IsAlive)
                 {
                     if (Runner.IsServer)
                     {
                         player.GetComponent<PlayerHealthController>().RPCReducePlayerHealth(damage);
-                        Debug.Log($"Hit {player.Name}");
+                        Debug.Log($"Hit {player.Object.Name}");
                     }
 
                     IsHitSomething = true;

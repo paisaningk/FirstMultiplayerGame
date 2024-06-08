@@ -26,6 +26,8 @@ namespace Player
         [Networked(OnChanged = nameof(OnNameChange))]
         public NetworkString<_8> PlayerName { get; set; }
 
+        [Networked] public NetworkBool IsAlive { get; private set; }
+
         [Header("LocalObject")]
         public GameObject camGameObject;
 
@@ -50,6 +52,8 @@ namespace Player
         public override void Spawned()
         {
             SetLocalObject();
+
+            IsAlive = true;
         }
 
         // this function call where player name have chang
@@ -104,7 +108,7 @@ namespace Player
         public void BeforeUpdate()
         {
             //check is we are local player
-            if (Runner.LocalPlayer == Object.HasInputAuthority)
+            if (Runner.LocalPlayer == Object.HasInputAuthority && IsAlive)
             {
                 horizontal = Input.GetAxisRaw(horizontalInputName);
             }
@@ -115,7 +119,7 @@ namespace Player
             // will return false if 
             // the clinet does not have state authority or input authority
             // the requested type of input data does not exist in the simulation
-            if (Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
+            if (IsAlive && Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
             {
                 rigidbody.velocity = new Vector2(input.horizontalInput * moveSpeed, rigidbody.velocity.y);
                 CheckJumpInput(input);
@@ -157,6 +161,13 @@ namespace Player
             data.gunPivotRotation = playerWeaponController.localQuaternionPivotRot;
 
             return data;
+        }
+
+        public void KillPlayer()
+        {
+            IsAlive = false;
+            rigidbody.simulated = false;
+            playerVisualController.TriggerDieAnimation();
         }
     }
 }

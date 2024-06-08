@@ -17,9 +17,11 @@ namespace Player
         private int CurrentHpAmount { get; set; }
 
         private const int maxHealthAmount = 100;
+        private PlayerController playerController;
 
         public override void Spawned()
         {
+            playerController = GetComponent<PlayerController>();
             CurrentHpAmount = maxHealthAmount;
         }
 
@@ -64,8 +66,8 @@ namespace Player
             {
                 Debug.Log("Local player got hit");
 
-                var shank = new Vector3(0.2f,0.1f);
-                
+                var shank = new Vector3(0.2f, 0.1f);
+
                 playerCameraController.ShankCamera(shank);
 
                 bloodHitAnimation.Play("Hit");
@@ -73,6 +75,7 @@ namespace Player
 
             if (healthAmount <= 0)
             {
+                playerController.KillPlayer();
                 Debug.Log("Player is dead");
             }
         }
