@@ -1,21 +1,15 @@
 ﻿using Fusion;
+using Lobby;
 using TMPro;
 using UnityEngine;
 using utilities;
 
 namespace Player
 {
-    public enum PlayerInputButton
-    {
-        None,
-        Jump,
-        Shoot
-    }
-
     public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         //for input
-        public const string horizontalInputName = "Horizontal";
+        private const string horizontalInputName = "Horizontal";
 
         //https://doc.photonengine.com/fusion/current/manual/data-transfer/networked-properties
         //การบอกให้ sever ว่าตัวแปรพวกนี้ต้อง sync นะแล้วก็เก็บเป็นของใครของมันด้วย
@@ -31,16 +25,17 @@ namespace Player
         [Header("LocalObject")]
         public GameObject camGameObject;
 
-        [Header("Input And Movement")] [Space]
+        [Header("Text")] [Space]
         public TMP_Text playerNameText;
 
-        [Header("Input And Movement")] [Space]
+        [Header("RespawnTime")] [Space]
         public float respawnTime = 5;
 
         [Header("Input And Movement")] [Space]
         public float moveSpeed = 6;
         public float jumpForce = 1000;
         public float horizontal;
+        public bool CanUseInput => IsAlive && !GameManager.MatchIsOver;
         public new Rigidbody2D rigidbody;
         public PlayerWeaponController playerWeaponController;
         public PlayerVisualController playerVisualController;
@@ -113,7 +108,7 @@ namespace Player
         public void BeforeUpdate()
         {
             //check is we are local player
-            if (Runner.LocalPlayer == Object.HasInputAuthority && IsAlive)
+            if (Runner.LocalPlayer == Object.HasInputAuthority && CanUseInput)
             {
                 horizontal = Input.GetAxisRaw(horizontalInputName);
             }
@@ -128,7 +123,7 @@ namespace Player
             // will return false if 
             // the clinet does not have state authority or input authority
             // the requested type of input data does not exist in the simulation
-            if (IsAlive && Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
+            if (CanUseInput && Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
             {
                 rigidbody.velocity = new Vector2(input.horizontalInput * moveSpeed, rigidbody.velocity.y);
                 CheckJumpInput(input);
@@ -195,6 +190,13 @@ namespace Player
                 RespawnTimeTimer = TickTimer.None;
                 RespawnPlayer();
             }
+        }
+
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            Destroy(gameObject);
+
+            GlobalManager.Instance.ObjectPoolingManager.RemoveObjectFromDictionary(Object);
         }
 
         public void RespawnPlayer()

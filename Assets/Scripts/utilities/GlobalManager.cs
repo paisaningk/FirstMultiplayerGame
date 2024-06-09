@@ -1,4 +1,5 @@
 ﻿using Fusion;
+using ObjectInGame;
 using Spawn;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace utilities
         [field: SerializeField] public NetworkRunnerController NetworkRunnerController { get; private set; }
         public const int maxCharForName = 2;
         public PlayerSpawnController PlayerSpawnController { get; set; }
+        public ObjectPoolingManager ObjectPoolingManager { get; set; }
 
         public bool IsLocalPlayer(NetworkObject networkObject)
         {

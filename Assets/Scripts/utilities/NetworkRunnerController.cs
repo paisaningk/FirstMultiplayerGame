@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
+using ObjectInGame;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -45,7 +46,8 @@ namespace utilities
                 GameMode = gameMode,
                 SessionName = roomName,
                 PlayerCount = 4,
-                SceneManager = networkRunnerInstance.GetComponent<INetworkSceneManager>()
+                SceneManager = networkRunnerInstance.GetComponent<INetworkSceneManager>(),
+                ObjectPool = networkRunnerInstance.GetComponent<ObjectPoolingManager>()
             };
 
             var result = await networkRunnerInstance.StartGame(startGameArgs);

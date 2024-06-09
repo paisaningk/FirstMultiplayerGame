@@ -34,7 +34,7 @@ namespace Player
 
         public void BeforeUpdate()
         {
-            if (playerController.IsAlive && Runner.LocalPlayer == Object.HasInputAuthority)
+            if (playerController.CanUseInput && Runner.LocalPlayer == Object.HasInputAuthority)
             {
                 var dir = localCam.ScreenToWorldPoint(Input.mousePosition) - transform.position;
                 var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -46,7 +46,7 @@ namespace Player
         public override void FixedUpdateNetwork()
         {
             // tell Current Player Pivot Rotation to host
-            if (playerController.IsAlive && Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
+            if (playerController.CanUseInput && Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
             {
                 CheckShootInput(input);
                 CurrentPlayerPivotRotation = input.gunPivotRotation;
