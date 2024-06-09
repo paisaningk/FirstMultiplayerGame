@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Player
 {
@@ -16,6 +15,7 @@ namespace Player
         private readonly int isWalking = Animator.StringToHash("IsWalking");
         private readonly int isShooting = Animator.StringToHash("IsShooting");
         private readonly int die = Animator.StringToHash("Die");
+        private static readonly int Respawn = Animator.StringToHash("Respawn");
         private const int shootingLayerIndex = 1;
 
         private void Start()
@@ -60,6 +60,11 @@ namespace Player
         public void TriggerDieAnimation()
         {
             animator.SetTrigger(die);
+        }
+
+        public void TriggerRespawnAnimation()
+        {
+            animator.SetTrigger(Respawn);
         }
 
         private Vector3 GetFlip(Vector3 vector3)

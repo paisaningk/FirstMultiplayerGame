@@ -1,8 +1,6 @@
 ﻿using Fusion;
-using ObjectInGame;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using utilities;
 
 namespace Player
@@ -20,8 +18,10 @@ namespace Player
         public const string horizontalInputName = "Horizontal";
 
         //https://doc.photonengine.com/fusion/current/manual/data-transfer/networked-properties
-        //การบอกให้ sever ว่าตัวแปรพวกนี้ต้อง sync นะ
+        //การบอกให้ sever ว่าตัวแปรพวกนี้ต้อง sync นะแล้วก็เก็บเป็นของใครของมันด้วย
         [Networked] private NetworkButtons ButtonsPrev { get; set; }
+        [Networked] private Vector2 SeverNextSpawnPoint { get; set; }
+        [Networked] public TickTimer RespawnTimeTimer { get; private set; }
 
         [Networked(OnChanged = nameof(OnNameChange))]
         public NetworkString<_8> PlayerName { get; set; }
@@ -35,18 +35,23 @@ namespace Player
         public TMP_Text playerNameText;
 
         [Header("Input And Movement")] [Space]
+        public float respawnTime = 5;
+
+        [Header("Input And Movement")] [Space]
         public float moveSpeed = 6;
         public float jumpForce = 1000;
         public float horizontal;
         public new Rigidbody2D rigidbody;
         public PlayerWeaponController playerWeaponController;
         public PlayerVisualController playerVisualController;
+        public PlayerHealthController playerHealthController;
 
         public void OnValidate()
         {
             rigidbody = GetComponent<Rigidbody2D>();
             playerWeaponController = GetComponent<PlayerWeaponController>();
             playerVisualController = GetComponent<PlayerVisualController>();
+            playerHealthController = GetComponent<PlayerHealthController>();
         }
 
         public override void Spawned()
@@ -116,6 +121,10 @@ namespace Player
 
         public override void FixedUpdateNetwork()
         {
+            //check is player should respawn
+            CheckRespawnTime();
+
+
             // will return false if 
             // the clinet does not have state authority or input authority
             // the requested type of input data does not exist in the simulation
@@ -165,9 +174,36 @@ namespace Player
 
         public void KillPlayer()
         {
+            if (Runner.IsServer)
+            {
+                SeverNextSpawnPoint = GlobalManager.Instance.PlayerSpawnController.GetRandomSpawnPoint();
+            }
+
             IsAlive = false;
             rigidbody.simulated = false;
             playerVisualController.TriggerDieAnimation();
+
+            RespawnTimeTimer = TickTimer.CreateFromSeconds(Runner, respawnTime);
+        }
+
+        private void CheckRespawnTime()
+        {
+            if (IsAlive) return;
+
+            if (RespawnTimeTimer.Expired(Runner))
+            {
+                RespawnTimeTimer = TickTimer.None;
+                RespawnPlayer();
+            }
+        }
+
+        public void RespawnPlayer()
+        {
+            IsAlive = true;
+            rigidbody.simulated = true;
+            rigidbody.position = SeverNextSpawnPoint;
+            playerVisualController.TriggerRespawnAnimation();
+            playerHealthController.ResetHealth();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Lobby

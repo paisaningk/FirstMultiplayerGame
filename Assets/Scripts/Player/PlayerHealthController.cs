@@ -2,7 +2,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using utilities;
 
 namespace Player
 {
@@ -78,6 +77,11 @@ namespace Player
                 playerController.KillPlayer();
                 Debug.Log("Player is dead");
             }
+        }
+
+        public void ResetHealth()
+        {
+            CurrentHpAmount = maxHealthAmount;
         }
     }
 }

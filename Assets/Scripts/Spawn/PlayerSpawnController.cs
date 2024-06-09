@@ -2,6 +2,8 @@
 using Fusion;
 using Unity.Mathematics;
 using UnityEngine;
+using utilities;
+using Random = UnityEngine.Random;
 
 namespace Spawn
 {
@@ -10,6 +12,18 @@ namespace Spawn
         [SerializeField] private NetworkPrefabRef playerNetworkPrefab = NetworkPrefabRef.Empty;
         [SerializeField] private List<GameObject> spawnPointList;
 
+        private void Awake()
+        {
+            if (GlobalManager.Instance)
+            {
+                GlobalManager.Instance.PlayerSpawnController = this;
+            }
+        }
+
+        public Vector2 GetRandomSpawnPoint()
+        {
+            return spawnPointList[Random.Range(0, spawnPointList.Count)].transform.position;
+        }
 
         public void PlayerJoined(PlayerRef player)
         {
@@ -25,7 +39,10 @@ namespace Spawn
         {
             if (Runner.IsServer)
             {
-                foreach (var player in Runner.ActivePlayers) SpawnPlayer(player);
+                foreach (var player in Runner.ActivePlayers)
+                {
+                    SpawnPlayer(player);
+                }
             }
         }
 

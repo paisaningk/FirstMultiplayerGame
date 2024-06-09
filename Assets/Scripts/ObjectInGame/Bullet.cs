@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Fusion;
 using Player;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace ObjectInGame

@@ -1,6 +1,5 @@
 ﻿using Fusion;
 using UnityEngine;
-using utilities;
 
 namespace Player
 {
@@ -101,7 +100,6 @@ namespace Player
             }
             else
             {
-                Debug.Log("Stop");
                 muzzleEffect.Stop();
             }
         }
