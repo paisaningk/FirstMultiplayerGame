@@ -325,7 +325,7 @@ MonoBehaviour:
   _interpolationDataSource: 3
   camera: {fileID: 1726472963}
   timerText: {fileID: 36271560}
-  matchTime: 60
+  matchTime: 180
   cameraBound: {fileID: 1692179695}
 --- !u!4 &291413433
 Transform:
@@ -11131,8 +11131,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1833188427
-  m_SortingLayer: 0
+  m_SortingLayerID: 1532100351
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: f25494a7f2f561341bf00cf3ef223d71, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -11729,6 +11729,14 @@ PrefabInstance:
     - target: {fileID: 2172948007259935948, guid: 3833067ae9c014946acc5e6781b2732e, type: 3}
       propertyPath: m_Name
       value: CanvasScreenSpace
+      objectReference: {fileID: 0}
+    - target: {fileID: 2172948007259935948, guid: 3833067ae9c014946acc5e6781b2732e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4044566216281316295, guid: 3833067ae9c014946acc5e6781b2732e, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 503
       objectReference: {fileID: 0}
     - target: {fileID: 4995248393511648368, guid: 3833067ae9c014946acc5e6781b2732e, type: 3}
       propertyPath: m_Pivot.x

@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <NetworkRunnerController>k__BackingField: {fileID: 2043315791}
+  gameManager: {fileID: 0}
 --- !u!4 &1646381889
 Transform:
   m_ObjectHideFlags: 0

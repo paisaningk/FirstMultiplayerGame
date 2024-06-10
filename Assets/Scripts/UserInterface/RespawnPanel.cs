@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace UserInterface
 {
+    // SimulationBehaviour every like networkBehaviour but can't use [networked]
     public class RespawnPanel : SimulationBehaviour
     {
         public PlayerController playerController;

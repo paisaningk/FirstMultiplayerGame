@@ -41,7 +41,7 @@ namespace Player
         public float moveSpeed = 6;
         public float jumpForce = 1000;
         public float horizontal;
-        public bool CanUseInput => IsAlive && !GameManager.MatchIsOver;
+        public bool CanUseInput => IsAlive && !GameManager.MatchIsOver && !PlayerChatController.IsTyping;
         public new Rigidbody2D rigidbody;
         public PlayerWeaponController playerWeaponController;
         public PlayerVisualController playerVisualController;
