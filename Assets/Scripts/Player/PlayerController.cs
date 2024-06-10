@@ -16,6 +16,8 @@ namespace Player
         [Networked] private NetworkButtons ButtonsPrev { get; set; }
         [Networked] private Vector2 SeverNextSpawnPoint { get; set; }
         [Networked] public TickTimer RespawnTimeTimer { get; private set; }
+        [Networked] public TickTimer MoveToNextSpawn { get; private set; }
+        [Networked] private NetworkBool IsGrounded { get; set; }
 
         [Networked(OnChanged = nameof(OnNameChange))]
         public NetworkString<_8> PlayerName { get; set; }
@@ -29,7 +31,11 @@ namespace Player
         public TMP_Text playerNameText;
 
         [Header("RespawnTime")] [Space]
-        public float respawnTime = 5;
+        public const float respawnTime = 5;
+
+        [Header("RespawnTime")] [Space]
+        public LayerMask groundLayerMask;
+        public Transform groundDetection;
 
         [Header("Input And Movement")] [Space]
         public float moveSpeed = 6;
@@ -84,6 +90,7 @@ namespace Player
         {
             if (Runner.LocalPlayer == Object.HasInputAuthority)
             {
+                camGameObject.transform.SetParent(null);
                 camGameObject.SetActive(true);
 
                 var playerName = GlobalManager.Instance.NetworkRunnerController.LocalPlayerName;
@@ -126,7 +133,10 @@ namespace Player
             if (CanUseInput && Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
             {
                 rigidbody.velocity = new Vector2(input.horizontalInput * moveSpeed, rigidbody.velocity.y);
+
                 CheckJumpInput(input);
+
+                ButtonsPrev = input.networkButtons;
             }
 
             playerVisualController.UpdateScalePlayer(rigidbody.velocity);
@@ -139,18 +149,23 @@ namespace Player
 
         public void CheckJumpInput(PlayerData input)
         {
-            // compare = เปรียบเทียบ https://doc.photonengine.com/fusion/current/manual/data-transfer/player-input
-            // compare the current state of the buttons with previous state to evaluate
-            // whether the buttons have just been pressed or released
-            var networkButtons = input.networkButtons.GetPressed(ButtonsPrev);
+            IsGrounded = (bool)Runner.GetPhysicsScene2D()
+                .OverlapBox(groundDetection.position, groundDetection.localScale, 9, groundLayerMask);
 
-            // if current state of the buttons not equal to previous state of the buttons , we add force to player 
-            if (networkButtons.WasPressed(ButtonsPrev, PlayerInputButton.Jump))
+
+            if (IsGrounded)
             {
-                rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
-            }
+                // compare = เปรียบเทียบ https://doc.photonengine.com/fusion/current/manual/data-transfer/player-input
+                // compare the current state of the buttons with previous state to evaluate
+                // whether the buttons have just been pressed or released
+                var networkButtons = input.networkButtons.GetPressed(ButtonsPrev);
 
-            ButtonsPrev = input.networkButtons;
+                // if current state of the buttons not equal to previous state of the buttons , we add force to player 
+                if (networkButtons.WasPressed(ButtonsPrev, PlayerInputButton.Jump))
+                {
+                    rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
+                }
+            }
         }
 
         public PlayerData GetPlayerNetworkInput()
@@ -172,6 +187,7 @@ namespace Player
             if (Runner.IsServer)
             {
                 SeverNextSpawnPoint = GlobalManager.Instance.PlayerSpawnController.GetRandomSpawnPoint();
+                MoveToNextSpawn = TickTimer.CreateFromSeconds(Runner, respawnTime - 1);
             }
 
             IsAlive = false;
@@ -184,6 +200,13 @@ namespace Player
         private void CheckRespawnTime()
         {
             if (IsAlive) return;
+
+            //run on sever only
+            if (MoveToNextSpawn.Expired(Runner))
+            {
+                GetComponent<NetworkRigidbody2D>().TeleportToPosition(SeverNextSpawnPoint);
+                MoveToNextSpawn = TickTimer.None;
+            }
 
             if (RespawnTimeTimer.Expired(Runner))
             {
@@ -203,7 +226,6 @@ namespace Player
         {
             IsAlive = true;
             rigidbody.simulated = true;
-            rigidbody.position = SeverNextSpawnPoint;
             playerVisualController.TriggerRespawnAnimation();
             playerHealthController.ResetHealth();
         }

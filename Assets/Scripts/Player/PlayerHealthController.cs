@@ -11,17 +11,34 @@ namespace Player
         public TMP_Text healthAmountText;
         public PlayerCameraController playerCameraController;
         public Animator bloodHitAnimation;
+        public LayerMask deadGround;
 
         [Networked(OnChanged = nameof(HealthAmountChange))]
         private int CurrentHpAmount { get; set; }
 
         private const int maxHealthAmount = 100;
         private PlayerController playerController;
+        public BoxCollider2D col;
 
         public override void Spawned()
         {
+            col = GetComponent<BoxCollider2D>();
             playerController = GetComponent<PlayerController>();
             CurrentHpAmount = maxHealthAmount;
+        }
+
+        public override void FixedUpdateNetwork()
+        {
+            //call in sever because we need run one time if call on client it could be called multiple time
+            if (Runner.IsServer && playerController.IsAlive)
+            {
+                var didHit = Runner.GetPhysicsScene2D().OverlapBox(transform.position, col.bounds.size, 0, deadGround);
+
+                if (didHit != default)
+                {
+                    RPCReducePlayerHealth(maxHealthAmount);
+                }
+            }
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.StateAuthority)]

@@ -11,9 +11,9 @@ TagManager:
   - 
   - Water
   - UI
-  - Groubd
+  - Ground
   - PlayerHitBox
-  - 
+  - DeadGround
   - 
   - 
   - 
@@ -40,6 +40,15 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: BG
+    uniqueID: 3187714415
+    locked: 0
+  - name: Platform
+    uniqueID: 1532100351
+    locked: 0
+  - name: Bullet
+    uniqueID: 392909045
     locked: 0
   - name: Player
     uniqueID: 2691067699

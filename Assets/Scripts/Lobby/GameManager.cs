@@ -13,6 +13,7 @@ namespace Lobby
         public new Camera camera;
         public TMP_Text timerText;
         public float matchTime = 60;
+        public Collider2D cameraBound;
 
         [Networked] private TickTimer MatchTimer { get; set; }
 
