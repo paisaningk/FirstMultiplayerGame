@@ -2,17 +2,27 @@
 using Fusion;
 using TMPro;
 using UnityEngine;
+using utilities;
 
 namespace Lobby
 {
     public class GameManager : NetworkBehaviour
     {
+        public event Action OnGameIsOver;
         public static bool MatchIsOver { get; private set; }
         public new Camera camera;
         public TMP_Text timerText;
         public float matchTime = 60;
-        
+
         [Networked] private TickTimer MatchTimer { get; set; }
+
+        private void Start()
+        {
+            if (GlobalManager.Instance)
+            {
+                GlobalManager.Instance.gameManager = this;
+            }
+        }
 
         public override void Spawned()
         {
@@ -34,6 +44,7 @@ namespace Lobby
             {
                 MatchIsOver = true;
                 MatchTimer = TickTimer.None;
+                OnGameIsOver?.Invoke();
             }
         }
     }

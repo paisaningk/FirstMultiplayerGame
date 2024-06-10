@@ -46,12 +46,21 @@ namespace Player
         public override void FixedUpdateNetwork()
         {
             // tell Current Player Pivot Rotation to host
-            if (playerController.CanUseInput && Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
+            if (Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
             {
-                CheckShootInput(input);
-                CurrentPlayerPivotRotation = input.gunPivotRotation;
+                if (playerController.CanUseInput)
+                {
+                    CheckShootInput(input);
+                    CurrentPlayerPivotRotation = input.gunPivotRotation;
 
-                ButtonsPrev = input.networkButtons;
+                    ButtonsPrev = input.networkButtons;
+                }
+                else
+                {
+                    IsHoldingShootingKey = false;
+                    PlayerMuzzleEffect = false;
+                    ButtonsPrev = default;
+                }
             }
 
             pivotToRotate.rotation = CurrentPlayerPivotRotation;
