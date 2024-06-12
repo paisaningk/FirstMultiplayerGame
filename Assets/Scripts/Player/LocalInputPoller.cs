@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
+using utilities;
 
 namespace Player
 {
@@ -11,7 +12,7 @@ namespace Player
 
         public override void Spawned()
         {
-            if (Runner.LocalPlayer == Object.HasInputAuthority)
+            if (Object.IsLocalPlayer())
             {
                 Runner.AddCallbacks(this);
             }

@@ -41,11 +41,12 @@ namespace Player
         public float moveSpeed = 6;
         public float jumpForce = 1000;
         public float horizontal;
-        public bool CanUseInput => IsAlive && !GameManager.MatchIsOver && !PlayerChatController.IsTyping;
+        public bool CanUseInput => IsAlive && !GameManager.MatchIsOver && !playerChatController.IsTyping;
         public new Rigidbody2D rigidbody;
         public PlayerWeaponController playerWeaponController;
         public PlayerVisualController playerVisualController;
         public PlayerHealthController playerHealthController;
+        public PlayerChatController playerChatController;
 
         public void OnValidate()
         {
@@ -72,7 +73,7 @@ namespace Player
 
         private void SetPlayerName(NetworkString<_8> playerName)
         {
-            playerNameText.text = playerName + " " + Object.InputAuthority.PlayerId;
+            playerNameText.text = playerName.ToString();
         }
 
         // Send RPC to the Host form Client
@@ -88,7 +89,7 @@ namespace Player
 
         private void SetLocalObject()
         {
-            if (Runner.LocalPlayer == Object.HasInputAuthority)
+            if (Object.IsLocalPlayer())
             {
                 camGameObject.transform.SetParent(null);
                 camGameObject.SetActive(true);
@@ -115,7 +116,7 @@ namespace Player
         public void BeforeUpdate()
         {
             //check is we are local player
-            if (Runner.LocalPlayer == Object.HasInputAuthority && CanUseInput)
+            if (Object.IsLocalPlayer() && CanUseInput)
             {
                 horizontal = Input.GetAxisRaw(horizontalInputName);
             }
@@ -132,11 +133,18 @@ namespace Player
             // the requested type of input data does not exist in the simulation
             if (CanUseInput && Runner.TryGetInputForPlayer(Object.InputAuthority, out PlayerData input))
             {
-                rigidbody.velocity = new Vector2(input.horizontalInput * moveSpeed, rigidbody.velocity.y);
+                if (CanUseInput)
+                {
+                    rigidbody.velocity = new Vector2(input.horizontalInput * moveSpeed, rigidbody.velocity.y);
 
-                CheckJumpInput(input);
+                    CheckJumpInput(input);
 
-                ButtonsPrev = input.networkButtons;
+                    ButtonsPrev = input.networkButtons;
+                }
+                else
+                {
+                    rigidbody.velocity = Vector2.zero;
+                }
             }
 
             playerVisualController.UpdateScalePlayer(rigidbody.velocity);

@@ -1,5 +1,6 @@
 ﻿using Fusion;
 using UnityEngine;
+using utilities;
 
 namespace Player
 {
@@ -34,7 +35,7 @@ namespace Player
 
         public void BeforeUpdate()
         {
-            if (playerController.CanUseInput && Runner.LocalPlayer == Object.HasInputAuthority)
+            if (playerController.CanUseInput && Object.IsLocalPlayer())
             {
                 var dir = localCam.ScreenToWorldPoint(Input.mousePosition) - transform.position;
                 var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

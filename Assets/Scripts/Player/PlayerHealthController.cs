@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using utilities;
 
 namespace Player
 {
@@ -78,7 +79,7 @@ namespace Player
 
         private void PlayerGotHit(int healthAmount)
         {
-            if (Runner.LocalPlayer == Object.HasInputAuthority)
+            if (Object.IsLocalPlayer())
             {
                 Debug.Log("Local player got hit");
 

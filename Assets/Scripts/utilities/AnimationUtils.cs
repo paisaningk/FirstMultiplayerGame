@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Fusion;
 using UnityEngine;
 
 namespace utilities
@@ -10,6 +11,11 @@ namespace utilities
         {
             yield return new WaitForSeconds(animator.GetAnimatorLength());
             parent.SetActive(activeStateAtTheEnd);
+        }
+
+        public static bool IsLocalPlayer(this NetworkObject networkObject)
+        {
+            return networkObject.IsValid == networkObject.HasInputAuthority;
         }
 
         private static int GetAnimatorLength(this Animator animator)

@@ -17,7 +17,7 @@ namespace utilities
 
         public bool IsLocalPlayer(NetworkObject networkObject)
         {
-            return NetworkRunnerController.networkRunnerInstance.LocalPlayer == networkObject.HasInputAuthority;
+            return networkObject.IsLocalPlayer();
         }
     }
 }

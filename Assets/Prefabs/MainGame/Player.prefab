@@ -7617,6 +7617,7 @@ MonoBehaviour:
   WordOffset: 0
   WordCount: 0
   _interpolationDataSource: 0
+  _IsTyping: 0
   inputField: {fileID: 3692138083516679628}
   bubbleAnimator: {fileID: 6697776733519407615}
   bubbleText: {fileID: 4067256019680456732}
@@ -8788,6 +8789,7 @@ MonoBehaviour:
   playerWeaponController: {fileID: 6801600406910014903}
   playerVisualController: {fileID: 4854571866248932727}
   playerHealthController: {fileID: 8788567760596150182}
+  playerChatController: {fileID: 4296722850985159986}
 --- !u!114 &2316791396100464654
 MonoBehaviour:
   m_ObjectHideFlags: 0

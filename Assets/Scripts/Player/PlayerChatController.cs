@@ -1,12 +1,13 @@
 ﻿using Fusion;
 using TMPro;
 using UnityEngine;
+using utilities;
 
 namespace Player
 {
     public class PlayerChatController : NetworkBehaviour
     {
-        public static bool IsTyping { get; private set; }
+        [Networked] public bool IsTyping { get; private set; }
         public TMP_InputField inputField;
         public Animator bubbleAnimator;
         public TMP_Text bubbleText;
@@ -14,15 +15,21 @@ namespace Player
 
         public override void Spawned()
         {
-            var isLocalPlayer = Object.InputAuthority == Runner.LocalPlayer;
+            var isLocalPlayer = Object.IsLocalPlayer();
             gameObject.SetActive(isLocalPlayer);
 
             if (isLocalPlayer)
             {
-                inputField.onSelect.AddListener(_ => IsTyping = true);
-                inputField.onSubmit.AddListener(_ => IsTyping = false);
+                inputField.onSelect.AddListener(_ => RPCUpdateIsTyping(true));
+                inputField.onSubmit.AddListener(_ => RPCUpdateIsTyping(false));
                 inputField.onSubmit.AddListener(OnSubmit);
             }
+        }
+
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        public void RPCUpdateIsTyping(bool tying)
+        {
+            IsTyping = tying;
         }
 
         private void OnSubmit(string s)
